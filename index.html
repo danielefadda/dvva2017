@@ -13,10 +13,22 @@
 			
 		</div>
 		<script type="text/javascript">
-			d3.select("#viz")
+			var svg = d3.select("#viz")
 				.append("svg")
 				.attr("width", 600)
 			.attr("height",400);
+			
+			var numbers = [5,10,15,20,25];
+			
+			var lines = svg.selectAll("line")
+				.data(numbers)
+			.enter().append("line");
+			
+			lines.attr("x1",10)
+				.attr("y1",10)
+				.attr("x2",200)
+			.attr("y2",10)
+			.attr("stroke","#000");
 		</script>
 	</body>
 	
