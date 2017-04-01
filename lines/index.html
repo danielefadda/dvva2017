@@ -24,10 +24,23 @@
 				.data(numbers)
 			.enter().append("line");
 			
-			lines.attr("x1",10).attr("y1",10)
-	.attr("x2",200)
-			.attr("y2",10)
+			var posy = function(d,i){
+				return 10 + i*10;
+			}
+			
+			var posx = function(d,i){
+				return d*10+10;
+			}
+			
+			lines
+			.attr("x1",10)
+			.attr("y1",posy)
+			.attr("x2",posx)
+			.attr("y2",posy)
 			.attr("stroke","#000");
+			
+			
+			
 		</script>
 	</body>
 	
