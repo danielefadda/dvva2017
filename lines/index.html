@@ -20,6 +20,18 @@
 			
 			var numbers = [5,10,15,20,25,35,45,12];
 			
+			// console.log(allNumbers);
+			// var numbers = d3.range(10)
+			// .map(function(d,i){return 0});
+			// console.log(numbers);
+			//
+			// allNumbers.map(function(d,i){
+			// 	numbers[Math.round(d/10)] += 1;
+			// });
+			//
+			// console.log(numbers);
+			
+			
 			var lines = svg.selectAll("line")
 				.data(numbers)
 			.enter().append("line");
