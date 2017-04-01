@@ -18,7 +18,7 @@
 				.attr("width", 600)
 			.attr("height",400);
 			
-			var numbers = [5,10,15,20,25];
+			var numbers = [5,10,15,20,25,35,45,12];
 			
 			var lines = svg.selectAll("line")
 				.data(numbers)
@@ -53,9 +53,16 @@
 				.domain([0,d3.max(numbers)])
 				.range([0,580]);
 				
-			var cScale = d3.scale.linear()
-				.domain([0,d3.max(numbers)])
-				.range(["#fff","#f00"]);
+			// var cScale = d3.scale.linear()
+			// 	.domain([0,d3.max(numbers)])
+			// 	.range(["#fff","#f00"]);
+			
+			
+			var cScale = d3.scale.quantile()
+				.domain(numbers)
+			.range(["#fff7bc","#fec44f","#d95f0e"]);
+			
+
 			
 			gs.attr("transform",gposy);
 			gs.append("line")
