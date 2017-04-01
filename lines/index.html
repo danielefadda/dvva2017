@@ -39,6 +39,22 @@
 			.attr("y2",function(d,i){return 10 + i * 10})
 			.attr("stroke","#000");
 			
+			// Alternative version with gs
+			var gs = svg.selectAll("g")
+			.data(numbers)
+			.enter().append("g");
+			
+			
+			var gposy = function(d,i){
+				return "translate(10,"+(i*10+200)+")";
+			}
+			
+			gs.attr("transform",gposy);
+			
+			gs.append("line")
+				.attr("x2",function(d,i){return d*10})
+				.attr("stroke","#000");
+			
 			
 			
 		</script>
