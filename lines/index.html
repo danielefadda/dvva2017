@@ -49,11 +49,18 @@
 				return "translate(10,"+(i*10+200)+")";
 			}
 			
-			gs.attr("transform",gposy);
+			var scale = d3.scale.linear()
+				.domain([0,d3.max(numbers)])
+				.range([0,580]);
+				
+			var cScale = d3.scale.linear()
+				.domain([0,d3.max(numbers)])
+				.range(["#fff","#f00"]);
 			
+			gs.attr("transform",gposy);
 			gs.append("line")
-				.attr("x2",function(d,i){return d*10})
-				.attr("stroke","#000");
+				.attr("x2",scale)
+				.attr("stroke",cScale);
 			// gs.append("rect")
 			// 	.attr("height",5)
 			// .attr("width",function(d,i){return d*10})
