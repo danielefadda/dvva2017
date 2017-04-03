@@ -17,6 +17,22 @@
 			
 		</div>
 		<script type="text/javascript">
+			var svg = d3.select("#viz")
+				.append("svg")
+				.attr("width",600)
+			.attr("height",400);
+			
+			d3.json("assets/countByColor.json",function(error,data){
+				console.log(data);
+				var chart = nv.models.multiBarHorizontalChart();
+				
+				svg
+					.datum(data)
+				.call(chart);
+				
+				svg.selectAll("rect")
+				.attr("fill", function(d,i){return d.x});
+			})
 			
 		</script>
 	</body>
