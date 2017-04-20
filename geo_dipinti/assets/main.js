@@ -1,4 +1,40 @@
+var width = 1100,
+height = 450;
 
+
+
+// MAP Preparation
+
+var svg = d3.select("#viz")
+    .append("svg")
+    .attr("width", width)
+.attr("height", height);
+
+
+// projection
+var projection = d3.geo.mercator()
+    .scale(120)
+    .center([0,40])
+.translate([width/2,height/2]);
+
+// path transofrmer (from coordinates to path definition)
+var path = d3.geo.path().projection(projection);
+
+var g = svg.append("g")
+.attr("class","map")
+.style("fill","gray");
+
+d3.json("assets/data/world.geojson",function(json){
+    console.log(json);
+    
+    g.selectAll("path")
+    .data(json.features)
+    .enter()
+    .append("path")
+    .filter(function(d){return d.properties.CNTR_ID != "AQ"})
+    .attr("d", path)
+    
+})
 
 
 
