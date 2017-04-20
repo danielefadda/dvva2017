@@ -2,6 +2,8 @@ var width = 1100,
 height = 450;
 
 
+var charts = {};
+
 
 // MAP Preparation
 var svg = d3.select("#viz")
@@ -54,6 +56,7 @@ var museums = {};
 
 // global variable to keep the list of all paintings
 var allOpere;
+
 
 d3.queue()
     .defer(dsv, "assets/data/opere_colori.csv", function(d){
@@ -134,28 +137,18 @@ function callback(error, opere){
             return m
         });
         
-        var groupby_technique = d3.nest()
-            .key(function(d){return d.TECHNIQUE.toLowerCase()})
-            .rollup(function(l){return l.length})
-        .entries(filtered);
-        console.log("GRP TECHNIQUE",groupby_technique);
         
-        var groupby_type = d3.nest()
-            .key(function(d){return d.TYPE})
-            .rollup(function(l){return l.length})
-        .entries(filtered);
-        console.log("GRP TYPE",groupby_type);
         
-        var groupby_school = d3.nest()
-            .key(function(d){return d.SCHOOL})
-            .rollup(function(l){return l.length})
-        .entries(filtered);
-        console.log("GRP SCHOOL",groupby_school);
+        updateAllCharts(filtered);
         
         console.log(d.key, filtered);
     });
     
     console.log("allOpere",allOpere);
+    //updateAllCharts(allOpere);
+  
+    
+    
 }
 
 // zoom and pan
@@ -171,6 +164,65 @@ var zoom = d3.behavior.zoom()
   
   
   
+  function updateAllCharts(filtered){
+      var groupby_technique = d3.nest()
+          .key(function(d){return d.TECHNIQUE.toLowerCase()})
+          .rollup(function(l){return l.length})
+      .entries(filtered);
+      console.log("GRP TECHNIQUE",groupby_technique);
+      updateChart("#chart1", "Technique", groupby_technique);
+      
+      var groupby_type = d3.nest()
+          .key(function(d){return d.TYPE})
+          .rollup(function(l){return l.length})
+      .entries(filtered);
+      console.log("GRP TYPE",groupby_type);
+      updateChart("#chart2", "Type", groupby_type);
+      
+      var groupby_school = d3.nest()
+          .key(function(d){return d.SCHOOL})
+          .rollup(function(l){return l.length})
+      .entries(filtered);
+      console.log("GRP SCHOOL",groupby_school);
+      updateChart("#chart3", "School", groupby_school);
+      
+      console.log("charts", charts);
+  }
+
+  function updateChart(selector, title, data){
+	
+      var svgChart = d3.select(selector);
+      
+      if(svgChart.select("svg").empty()){
+        svgChart.append("h4")
+          .text(title);
+         
+  		svgChart = svgChart.append("svg")
+  		    .attr("width","100%")
+  	      .attr("height",500);
+          
+        // create a new chart
+        var chart = nv.models.multiBarHorizontalChart()
+            .margin({left:150, right:10, bottom:20})
+            .showControls(false)
+            .showLegend(false);
+      
+        charts[selector] = chart;
+    }
+      
+    
+    // assign new data to the chart
+    svgChart.datum([
+        {
+            key:"Count " + title, 
+            values:data
+                .map(function(d){return {x: d.key, y: d.values}})  // rename property names of objects
+                .sort(function(a,b){return -a.y + b.y}) // sort by frequency
+                .filter(function(d,i){return i < 10})  // select only first 10 rows
+        }])
+        .call(charts[selector]);
+      // nv.utils.windowResize(charts[selector].update);
+  }
   
 
   
