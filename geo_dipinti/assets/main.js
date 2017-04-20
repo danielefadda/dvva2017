@@ -20,18 +20,27 @@ var projection = d3.geo.mercator()
 // path transofrmer (from coordinates to path definition)
 var path = d3.geo.path().projection(projection);
 
-var g = svg.append("g")
+
+// a major g to contain all the visuals
+var gg = svg.append("g");
+
+// first child g to contain map
+var g = gg.append("g")
 .attr("class","map")
 .style("fill","lightgray");
 
+// second child g to contain circles
+var gm = gg.append("g");
+
+// load file with the map
 d3.json("assets/data/world.geojson",function(json){
     console.log(json);
     
+    // draw the map using projection and path
     g.selectAll("path")
-    .data(json.features)
+    .data(json.features.filter(function(d){return d.properties.CNTR_ID != "AQ"}))
     .enter()
     .append("path")
-    .filter(function(d){return d.properties.CNTR_ID != "AQ"})
     .attr("d", path)
     
 })
@@ -76,6 +85,10 @@ d3.queue()
 .await(callback);
 
 
+    var radius = d3.scale.sqrt()
+.range([2,30]);
+
+
 function callback(error, opere){
     if(error) console.log(error);
     
@@ -91,14 +104,13 @@ function callback(error, opere){
     
     
     
-    var gm = svg.append("g");
-    var radius = d3.scale.sqrt()
-        .domain(d3.extent(d3.values(nested_all),function(d){return d.values}))
-        .range([2,30])
+    radius
+    .domain(d3.extent(d3.values(nested_all),function(d){return d.values}));
+    
     
     
     gm.selectAll("circle")
-    .data(d3.values(nested_all))
+    .data(d3.values(nested_all).sort(function(a,b){return -a.values +b.values}))
     .enter()
     .append("circle")
     .attr("cx", function(d){
@@ -109,10 +121,23 @@ function callback(error, opere){
     })
     .attr("r",function(d){return radius(d.values)})
     .attr("fill", colorbrewer['Reds'][3][2])
-    .attr("opacity",0.6)
-    .on("mouseover",function(d){console.log(d.key)});
+    .attr("opacity",0.8)
+    .on("click",function(d){console.log(d.key)});
     
     console.log(nested_all);
 
 
 }
+
+
+// zoom and pan
+var zoom = d3.behavior.zoom()
+    .on("zoom",function() {
+        gg.attr("transform","translate("+ 
+            d3.event.translate.join(",")+")scale("+d3.event.scale+")");
+        gg.selectAll("path")  
+            .attr("d", path.projection(projection)); 
+  });
+
+svg.call(zoom)
+
