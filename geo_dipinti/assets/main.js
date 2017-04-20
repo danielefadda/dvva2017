@@ -67,7 +67,7 @@ d3.queue()
         }
         
         // save the coordinates of museum in the dictionary 
-        var ms = museums[d.MUSEUM] || (museums[d.MUSEUM] = {name: d.MUSEUM, lat: +d.ARTWORK_PLACE_LAT, lon: +d.ARTWORK_PLACE_LON});
+        var ms = museums[d.MUSEUM] || (museums[d.MUSEUM] = {name: d.MUSEUM, point: [+d.ARTWORK_PLACE_LON, +d.ARTWORK_PLACE_LAT]});
         
         
         // return the modified row
@@ -88,6 +88,22 @@ function callback(error, opere){
         .key(function(d){return d.MUSEUM})
         .rollup(function(leaves){return leaves.length})
     .entries(opere);
+    
+    
+    
+    var gm = svg.append("g");
+    
+    gm.selectAll("circle")
+    .data(d3.values(nested_all))
+    .enter()
+    .append("circle")
+    .attr("cx", function(d){
+        return projection(museums[d.key].point)[0];
+    })
+    .attr("cy", function(d){
+        return projection(museums[d.key].point)[1];
+    })
+    .attr("r",5);
     
     console.log(nested_all);
 
