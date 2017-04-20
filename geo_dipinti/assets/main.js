@@ -94,7 +94,7 @@ function callback(error, opere){
     var gm = svg.append("g");
     var radius = d3.scale.sqrt()
         .domain(d3.extent(d3.values(nested_all),function(d){return d.values}))
-        .range([2,20])
+        .range([2,30])
     
     
     gm.selectAll("circle")
@@ -109,7 +109,8 @@ function callback(error, opere){
     })
     .attr("r",function(d){return radius(d.values)})
     .attr("fill", colorbrewer['Reds'][3][2])
-    .attr("opacity",0.6);
+    .attr("opacity",0.6)
+    .on("mouseover",function(d){console.log(d.key)});
     
     console.log(nested_all);
 
