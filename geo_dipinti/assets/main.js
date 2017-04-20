@@ -4,7 +4,6 @@ height = 450;
 
 
 // MAP Preparation
-
 var svg = d3.select("#viz")
     .append("svg")
     .attr("width", width)
@@ -48,10 +47,13 @@ d3.json("assets/data/world.geojson",function(json){
 
 
 // DATA PREPARATION
-
 var dsv = d3.dsv(";","text/plain");
 
+// global variable to have a list of all museums
 var museums = {};
+
+// global variable to keep the list of all paintings
+var allOpere;
 
 d3.queue()
     .defer(dsv, "assets/data/opere_colori.csv", function(d){
@@ -85,24 +87,24 @@ d3.queue()
 .await(callback);
 
 
-    var radius = d3.scale.sqrt()
+
+// global function to scale the number of paintings for each circle
+// pay attention to SQRT scale
+var radius = d3.scale.sqrt()
 .range([2,30]);
 
 
 function callback(error, opere){
     if(error) console.log(error);
-    
+    allOpere = opere;
     console.log(opere);
     console.log(museums);
     
-    
     // GROUP opere BY MUSEUM
-    var nested_all = d3.nest()
+    nested_all = d3.nest()
         .key(function(d){return d.MUSEUM})
         .rollup(function(leaves){return leaves.length})
     .entries(opere);
-    
-    
     
     radius
     .domain(d3.extent(d3.values(nested_all),function(d){return d.values}));
@@ -122,13 +124,39 @@ function callback(error, opere){
     .attr("r",function(d){return radius(d.values)})
     .attr("fill", colorbrewer['Reds'][3][2])
     .attr("opacity",0.8)
-    .on("click",function(d){console.log(d.key)});
+    .on("click",function(d){
+        // do something with select object 
+        var k = d.key;
+        
+        // select only rows with the given museum
+        var filtered = allOpere.filter(function(m){
+            if (m.MUSEUM==k)
+            return m
+        });
+        
+        var groupby_technique = d3.nest()
+            .key(function(d){return d.TECHNIQUE.toLowerCase()})
+            .rollup(function(l){return l.length})
+        .entries(filtered);
+        console.log("GRP TECHNIQUE",groupby_technique);
+        
+        var groupby_type = d3.nest()
+            .key(function(d){return d.TYPE})
+            .rollup(function(l){return l.length})
+        .entries(filtered);
+        console.log("GRP TYPE",groupby_type);
+        
+        var groupby_school = d3.nest()
+            .key(function(d){return d.SCHOOL})
+            .rollup(function(l){return l.length})
+        .entries(filtered);
+        console.log("GRP SCHOOL",groupby_school);
+        
+        console.log(d.key, filtered);
+    });
     
-    console.log(nested_all);
-
-
+    console.log("allOpere",allOpere);
 }
-
 
 // zoom and pan
 var zoom = d3.behavior.zoom()
@@ -139,5 +167,11 @@ var zoom = d3.behavior.zoom()
             .attr("d", path.projection(projection)); 
   });
 
-svg.call(zoom)
+  svg.call(zoom);
+  
+  
+  
+  
+
+  
 
