@@ -92,6 +92,10 @@ function callback(error, opere){
     
     
     var gm = svg.append("g");
+    var radius = d3.scale.sqrt()
+        .domain(d3.extent(d3.values(nested_all),function(d){return d.values}))
+        .range([2,20])
+    
     
     gm.selectAll("circle")
     .data(d3.values(nested_all))
@@ -103,7 +107,7 @@ function callback(error, opere){
     .attr("cy", function(d){
         return projection(museums[d.key].point)[1];
     })
-    .attr("r",5);
+    .attr("r",function(d){return radius(d.values)});
     
     console.log(nested_all);
 
