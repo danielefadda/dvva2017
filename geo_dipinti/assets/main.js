@@ -140,12 +140,14 @@ function callback(error, opere){
         
         
         updateAllCharts(filtered);
+        d3.select("#museum")
+            .text(function(e){return "Location: " + d.key})
         
         console.log(d.key, filtered);
     });
     
     console.log("allOpere",allOpere);
-    //updateAllCharts(allOpere);
+    updateAllCharts(allOpere);
   
     
     
@@ -190,15 +192,16 @@ var zoom = d3.behavior.zoom()
   }
 
   function updateChart(selector, title, data){
-	
-      var svgChart = d3.select(selector);
+      var sel = d3.select(selector);
+      var svgChart;
       
-      if(svgChart.select("svg").empty()){
-        svgChart.append("h4")
-          .text(title);
+      if(sel.select("svg").empty()){
+             sel
+                .append("h4")
+              .text(title);
          
-  		svgChart = svgChart.append("svg")
-  		    .attr("width","100%")
+          svgChart = sel.append("svg")
+  		  .attr("width","100%")
   	      .attr("height",500);
           
         // create a new chart
@@ -208,6 +211,8 @@ var zoom = d3.behavior.zoom()
             .showLegend(false);
       
         charts[selector] = chart;
+    }else{
+        svgChart = sel.select("svg");
     }
       
     
