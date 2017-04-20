@@ -13,8 +13,8 @@ var svg = d3.select("#viz")
 
 // projection
 var projection = d3.geo.mercator()
-    .scale(120)
-    .center([0,40])
+    .scale(390)
+    .center([-47,50])
 .translate([width/2,height/2]);
 
 // path transofrmer (from coordinates to path definition)
@@ -22,7 +22,7 @@ var path = d3.geo.path().projection(projection);
 
 var g = svg.append("g")
 .attr("class","map")
-.style("fill","gray");
+.style("fill","lightgray");
 
 d3.json("assets/data/world.geojson",function(json){
     console.log(json);
@@ -107,7 +107,9 @@ function callback(error, opere){
     .attr("cy", function(d){
         return projection(museums[d.key].point)[1];
     })
-    .attr("r",function(d){return radius(d.values)});
+    .attr("r",function(d){return radius(d.values)})
+    .attr("fill", colorbrewer['Reds'][3][2])
+    .attr("opacity",0.6);
     
     console.log(nested_all);
 
