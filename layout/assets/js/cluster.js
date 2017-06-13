@@ -1,6 +1,6 @@
 
-var width = 750,
-    height = 2200;
+var width = 360,
+    height = 800;
 
 // var cluster = d3.layout.cluster()
 //     .size([height, width - 160]);
@@ -12,10 +12,10 @@ var diagonal = d3.svg.diagonal()
     .projection(function(d) { return [d.y, d.x]; });
 
 var svg = d3.select("#viz").append("svg")
-    .attr("width", width)
-    .attr("height", height)
+    .attr("width", 900)
+    .attr("height", 900)
   .append("g")
-    .attr("transform", "translate(40,0)");
+    .attr("transform", "translate(450,450)");
 
 d3.json("assets/data/flare.json", function(error, root) {
   if (error) throw error;
@@ -39,7 +39,10 @@ d3.json("assets/data/flare.json", function(error, root) {
       .data(nodes)
     .enter().append("g")
       .attr("class", "node")
-      .attr("transform", function(d) { return "translate(" + d.y + "," + d.x + ")"; })
+      .attr("transform", function(d) { 
+		  // return "translate(" + d.y + "," + d.x + ")";
+		  return "rotate("+d.x+")"+"translate("+d.y+")"
+	  })
 
   node.append("circle")
       .attr("r", 4.5);

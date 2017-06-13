@@ -4,8 +4,9 @@ var width = 960,
 var color = d3.scale.category20();
 
 var force = d3.layout.force()
-	.charge(-150)
+	.charge(function(d){return -d.weight*100})
 	.linkDistance(30)
+	.gravity(0.9)
 	.size([width, height]);
 
 var svg = d3.select("#viz").append("svg")
@@ -17,7 +18,6 @@ d3.json("assets/data/miserables.json", function(error, graph) {
 
 	force
 		.nodes(graph.nodes)
-		.gravity(0.1)
 		.links(graph.links)
 		.start();
 
