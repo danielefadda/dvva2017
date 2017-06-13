@@ -3,32 +3,37 @@ function Treemap(){
 	var svg;
 	var config = {
 		width: 800,
-		height:800
+		height:400
 	};
 	var color = d3.scale.category20c();
 	
 	
 	function me(selection){
-		if(selection.select("svg").empty()){
-			svg = selection.append("svg")
-				.attr({
-					width: config.width,
-					height: config.height,
-				});
-		}
 		
+		var divs = selection.selectAll("div.year")
+			.data(selection.datum().children)
+			.enter()
+			.append("div")
+		.classed("year",true);
+		
+		divs.append("h4")
+		.text(function(d){return d.name});
+		
+		var svg = divs.append("svg")
+		.attr({width: config.width, height: config.height});
 		
 		var treemap = d3.layout.treemap()
 			.size([config.width,config.height])
-			.padding(function(d){
-				return d.depth==2 ? [20,0,0,0] : 3
-			})
+			.padding(3)
 		.value(function(d){return d[1]});
 		
-		console.log(treemap.nodes(selection.datum()));
+		//console.log(treemap.nodes(selection.datum()));
 		
 		var cell = svg.selectAll(".node")
-			.data(treemap.nodes)
+			.data(function(d){
+				// create a treemap only for the specific year
+				return treemap.nodes(d)
+			})
 			.enter()
 			.append("g")
 		.classed("node",true)
@@ -46,9 +51,7 @@ function Treemap(){
 			.attr("y", function(d){return d.dy / 2})
 			.attr("dy", ".3em")
 			.attr("text-anchor","middle")
-			.text(function(d){return (d.children) ? null: d[0]})
-;
-		
+		.text(function(d){return (d.children) ? null: d[0]});
 	}
 	
 	
