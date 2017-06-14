@@ -26,10 +26,11 @@ function App(){
 			// check the final results on the console
 			console.log("root",root);
 			var treemap = Treemap();  // create a new istance of our component
+			var circlePack = CirclePack();
 			// attach data to selection and draw the tree
 			d3.select("#viz")
 			.datum(root)
-			.call(treemap);
+			.call(circlePack);
 			
 			
 		})

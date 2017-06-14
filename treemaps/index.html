@@ -8,6 +8,7 @@
 		
 		<script src="assets/js/main.js" type="text/javascript" charset="utf-8"></script>
 		<script src="assets/js/treemap.js" type="text/javascript" charset="utf-8"></script>
+		<script src="assets/js/circle_pack.js" type="text/javascript" charset="utf-8"></script>
 		
 		<style>
 
@@ -19,7 +20,17 @@
 			  stroke: #fff;
 		}
 		
-		
+		circle {
+		  fill: rgb(31, 119, 180);
+		  fill-opacity: .25;
+		  stroke: rgb(31, 119, 180);
+		  stroke-width: 1px;
+		}
+
+		.leaf circle {
+		  fill: #ff7f0e;
+		  fill-opacity: 1;
+		}
 
 		text {
 		  font: 10px sans-serif;
